@@ -25,7 +25,7 @@ const authentication = (req, res, next) => {
         })
       }
 
-      const sql_user = 'SELECT email, user_type FROM user WHERE email=? AND access_token=?';
+      const sql_user = 'SELECT user_id, email, user_type FROM user WHERE email=? AND access_token=?';
 
       const req_body_user = [
         data.email,
