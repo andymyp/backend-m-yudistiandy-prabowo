@@ -55,3 +55,48 @@ exports.createProduct = async (req, res) => {
     });
   });
 };
+
+exports.listProduct = async (req, res) => {
+  if (req.user.user_type !== 0) {
+    return res.json({
+      status: 0,
+      message: `Can't access this endpoint! Please use merchant account.`,
+    });
+  }
+
+  const sql_merchant = 'SELECT merchant_id FROM merchant WHERE user_id=?';
+
+  const req_body_merchant = [
+    req.user.user_id,
+  ];
+
+  db.query(sql_merchant, req_body_merchant, async (err, merchant) => {
+    if (err) {
+      return res.json({
+        status: 0,
+        message: err.message,
+      });
+    }
+
+    const sql_product = 'SELECT * FROM product WHERE merchant_id=?';
+
+    const req_body_product = [
+      merchant[0].merchant_id,
+    ];
+
+    db.query(sql_product, req_body_product, (err, result) => {
+      if (err) {
+        return res.json({
+          status: 0,
+          message: err.message,
+        });
+      }
+
+      return res.json({
+        status: 1,
+        message: 'Success',
+        data: result,
+      });
+    });
+  });
+};
