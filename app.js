@@ -13,7 +13,10 @@ app.use(express.json());
 
 //! Public Routes
 app.use('/status', (req, res) => {
-  res.status(200).json({ message: 'Server is running' });
+  res.status(200).json({ 
+    status: 1,
+    message: 'Server is running' 
+  });
 });
 
 app.use('/api/auth', require('./routes/auth'));
@@ -23,7 +26,11 @@ app.use(require('./middlewares/authentication'));
 
 //! Protected Routes
 app.use('/api/test-auth', (req, res) => {
-  res.status(200).json({ message: 'Authorized!' });
+  res.status(200).json({ 
+    status: 1,
+    message: 'Authorized!',
+    data: req.user,
+  });
 });
 
 //! Not Found

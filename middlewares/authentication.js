@@ -25,7 +25,7 @@ const authentication = (req, res, next) => {
         })
       }
 
-      const sql_user = 'SELECT email, user_type, access_token FROM user WHERE email=? AND access_token=?';
+      const sql_user = 'SELECT email, user_type FROM user WHERE email=? AND access_token=?';
 
       const req_body_user = [
         data.email,
@@ -41,12 +41,14 @@ const authentication = (req, res, next) => {
         }
 
         if (result.length === 0) {
+          req.user = {};
           return res.json({
             statusCode: 0,
             message: 'Not Authorized!',
           })
         }
 
+        req.user = result[0];
         return next();
       });
     });
