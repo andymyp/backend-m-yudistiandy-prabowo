@@ -6,4 +6,6 @@ router.post('/list-product', controller.listProduct);
 router.post('/update-product', controller.updateProduct);
 router.post('/delete-product', controller.deleteProduct);
 
+router.post('/list-customer', controller.listCustomer);
+
 module.exports = router;

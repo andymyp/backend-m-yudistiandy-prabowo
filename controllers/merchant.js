@@ -223,3 +223,53 @@ exports.deleteProduct = async (req, res) => {
     });
   });
 };
+
+exports.listCustomer = async (req, res) => {
+  if (req.user.user_type !== 0) {
+    return res.json({
+      status: 0,
+      message: `Can't access this endpoint! Please use merchant account.`,
+    });
+  }
+
+  const sql_merchant = 'SELECT merchant_id FROM merchant WHERE user_id=?';
+
+  const req_body_merchant = [
+    req.user.user_id,
+  ];
+
+  db.query(sql_merchant, req_body_merchant, async (err, merchant) => {
+    if (err) {
+      return res.json({
+        status: 0,
+        message: err.message,
+      });
+    }
+
+    const rows = 't.transaction_id, t.created_at as transaction_time, c.customer_id, c.name as customer_name, p.product_id, p.name as product_name, t.total_price';
+    const tables = 'product p, transaction t, customer c';
+    const conditions = 'p.merchant_id=? AND p.product_id=t.product_id AND t.customer_id=c.customer_id';
+    const order_by = 't.created_at DESC'
+
+    const sql = `SELECT ${rows} FROM ${tables} WHERE ${conditions} ORDER BY ${order_by}`;
+
+    const req_body = [
+      merchant[0].merchant_id,
+    ];
+
+    db.query(sql, req_body, (err, result) => {
+      if (err) {
+        return res.json({
+          status: 0,
+          message: err.message,
+        });
+      }
+
+      return res.json({
+        status: 1,
+        message: 'Success',
+        data: result,
+      });
+    });
+  });
+};
