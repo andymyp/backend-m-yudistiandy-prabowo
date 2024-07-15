@@ -16,6 +16,8 @@ app.use('/status', (req, res) => {
   res.status(200).json({ message: 'Server is running' });
 });
 
+app.use('/api/auth', require('./routes/auth'));
+
 //! Protected Routes
 
 //! Not Found
