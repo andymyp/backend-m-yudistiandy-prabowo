@@ -100,3 +100,66 @@ exports.listProduct = async (req, res) => {
     });
   });
 };
+
+exports.updateProduct = async (req, res) => {
+  if (req.user.user_type !== 0) {
+    return res.json({
+      status: 0,
+      message: `Can't access this endpoint! Please use merchant account.`,
+    });
+  }
+
+  const sql_merchant = 'SELECT merchant_id FROM merchant WHERE user_id=?';
+
+  const req_body_merchant = [
+    req.user.user_id,
+  ];
+
+  db.query(sql_merchant, req_body_merchant, async (err, merchant) => {
+    if (err) {
+      return res.json({
+        status: 0,
+        message: err.message,
+      });
+    }
+
+    const { error } = await merchant_function.validateUpdateProduct(req.body);
+    if (error) {
+      return res.json({
+        status: 0,
+        message: error.details[0].message,
+      });
+    }
+
+    const sql_product = 'UPDATE product SET name=?, description=?, price=? WHERE merchant_id=? AND product_id=?';
+
+    const req_body_product = [
+      req.body.name,
+      req.body.description,
+      req.body.price,
+      merchant[0].merchant_id,
+      req.body.product_id,
+    ];
+
+    db.query(sql_product, req_body_product, (err, result) => {
+      if (err) {
+        return res.json({
+          status: 0,
+          message: err.message,
+        });
+      }
+
+      if (result.affectedRows === 0) {
+        return res.json({
+          status: 0,
+          message: 'Failed! Product not found.',
+        });
+      }
+
+      return res.json({
+        status: 1,
+        message: 'Product updated',
+      });
+    });
+  });
+};
