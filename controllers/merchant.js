@@ -78,7 +78,7 @@ exports.listProduct = async (req, res) => {
       });
     }
 
-    const sql_product = 'SELECT * FROM product WHERE merchant_id=?';
+    const sql_product = 'SELECT * FROM product WHERE merchant_id=? ORDER BY created_at DESC';
 
     const req_body_product = [
       merchant[0].merchant_id,

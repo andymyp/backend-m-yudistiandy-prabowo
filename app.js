@@ -34,6 +34,7 @@ app.use('/api/test-auth', (req, res) => {
 });
 
 app.use('/api/merchant', require('./routes/merchant'));
+app.use('/api/customer', require('./routes/customer'));
 
 //! Not Found
 app.all('*', (req, res) => {
