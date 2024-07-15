@@ -18,7 +18,13 @@ app.use('/status', (req, res) => {
 
 app.use('/api/auth', require('./routes/auth'));
 
+//! Auth Middleware
+app.use(require('./middlewares/authentication'));
+
 //! Protected Routes
+app.use('/api/test-auth', (req, res) => {
+  res.status(200).json({ message: 'Authorized!' });
+});
 
 //! Not Found
 app.all('*', (req, res) => {
