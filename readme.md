@@ -50,7 +50,7 @@ This project build with Node.js, Express, JWT, MySQL, Joi, and Bcrypt
   npm install npm@latest -g
   ```
 
-
+<br />
 
 ## Installation
 
