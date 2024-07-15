@@ -10,10 +10,6 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/othneildrew/Best-README-Template">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
-  </a>
-
   <h3 align="center">BACKEND-M-YUDISTIANDY-PRABOWO</h3>
 
   <p align="center">
@@ -28,19 +24,13 @@
 <details>
   <summary>Table of Contents</summary>
   <ol>
-    <li>
-      <li><a href="#built-with">Built With</a></li>
-    </li>
-    <li>
-      <li><a href="#prerequisites">Prerequisites</a></li>
-    </li>
-    <li>
-      <li><a href="#installation">Installation</a></li>
-    </li>
+    <li><a href="#built-with">Built With</a></li>
+    <li><a href="#prerequisites">Prerequisites</a></li>
+    <li><a href="#installation">Installation</a></li>
     <li><a href="#usage">Usage</a></li>
   </ol>
 </details>
-
+<br />
 
 
 <!-- ABOUT THE PROJECT -->
@@ -59,6 +49,8 @@ This project build with Node.js, Express, JWT, MySQL, Joi, and Bcrypt
   ```sh
   npm install npm@latest -g
   ```
+
+
 
 ## Installation
 
