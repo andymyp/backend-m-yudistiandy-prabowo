@@ -20,3 +20,11 @@ exports.validateUpdateProduct = async (req_body) => {
 
   return schema.validate(req_body);
 };
+
+exports.validateDeleteProduct = async (req_body) => {
+  const schema = Joi.object({
+    product_id: Joi.number().required(),
+  });
+
+  return schema.validate(req_body);
+};
