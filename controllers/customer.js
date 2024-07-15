@@ -46,8 +46,8 @@ exports.listProduct = async (req, res) => {
   });
 };
 
-exports.updateProduct = async (req, res) => {
-  if (req.user.user_type !== 0) {
+exports.createTransaction = async (req, res) => {
+  if (req.user.user_type !== 1) {
     return res.json({
       status: 0,
       message: `Can't access this endpoint! Please use customer account.`,
@@ -68,7 +68,7 @@ exports.updateProduct = async (req, res) => {
       });
     }
 
-    const { error } = await customer_function.validateUpdateProduct(req.body);
+    const { error } = await customer_function.validateTransaction(req.body);
     if (error) {
       return res.json({
         status: 0,
@@ -76,17 +76,13 @@ exports.updateProduct = async (req, res) => {
       });
     }
 
-    const sql_product = 'UPDATE product SET name=?, description=?, price=? WHERE customer_id=? AND product_id=?';
+    const sql_product = 'SELECT name, price FROM product WHERE product_id=?';
 
     const req_body_product = [
-      req.body.name,
-      req.body.description,
-      req.body.price,
-      customer[0].customer_id,
       req.body.product_id,
     ];
 
-    db.query(sql_product, req_body_product, (err, result) => {
+    db.query(sql_product, req_body_product, (err, product) => {
       if (err) {
         return res.json({
           status: 0,
@@ -94,16 +90,50 @@ exports.updateProduct = async (req, res) => {
         });
       }
 
-      if (result.affectedRows === 0) {
+      if (product.length === 0) {
         return res.json({
           status: 0,
-          message: 'Failed! Product not found.',
+          message: 'Product not found!',
         });
       }
 
-      return res.json({
-        status: 1,
-        message: 'Product updated',
+      let discount = 0;
+      let shipping_cost = 10000;
+
+      if (product[0].price > 50000) {
+        discount = 10;
+      }
+      
+      if (product[0].price > 15000) {
+        shipping_cost = 0;
+      }
+      
+      let discount_amount = product[0].price * (discount / 100);
+      let total_price = (product[0].price - discount_amount) + shipping_cost;
+
+      const sql_transaction = 'INSERT INTO transaction (customer_id, product_id, discount, shipping_cost, price, total_price) VALUES (?, ?, ?, ?, ?, ?)';
+
+      const req_body_transaction = [
+        customer[0].customer_id,
+        req.body.product_id,
+        discount,
+        shipping_cost,
+        product[0].price,
+        total_price,
+      ];
+
+      db.query(sql_transaction, req_body_transaction, (err) => {
+        if (err) {
+          return res.json({
+            status: 0,
+            message: err.message,
+          });
+        }
+
+        return res.json({
+          status: 1,
+          message: 'Transaction created',
+        });
       });
     });
   });
